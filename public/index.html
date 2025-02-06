@@ -1,0 +1,113 @@
+<html>
+<head>
+    <title>A-Frame VR Experience</title>
+    <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+    <script src="https://unpkg.com/aframe-environment-component@1.3.3/dist/aframe-environment-component.min.js"></script>
+    <script src="https://rawgit.com/Ctrl-Alt-Zen/aframe-mobile-controls/master/components/twoway-motion/twoway-motion.js"></script>
+    <script src="./js/clicktopickup.js"></script>
+    <script src="./js/dropitem.js"></script>>
+    <link rel="stylesheet" href="./assets/css/user-gesture.css">
+    <script>
+        AFRAME.registerComponent('start-experience', {
+          init: function () {
+            document.querySelector('#user-gesture-button').style.display='block';
+          }
+        });
+
+        const startExperience = function() {
+          //hide user-gesture overlay
+          document.querySelector('#user-gesture-overlay').style.display='none';
+          
+          //start all ambient music
+          const ambientSounds = document.querySelectorAll('.ambient-music');
+          ambientSounds.forEach(function(soundEntity) {
+            soundEntity.components.sound.playSound();
+          });
+        }
+    </script>
+</head>
+<body>
+
+    <div id="user-gesture-overlay">
+        <div class="center">
+          <button id="user-gesture-button" onclick="startExperience();">Enter History</button>
+        </div>
+      </div>
+
+    <a-assets>
+        <a-asset-item id="bastetModel" response-type="arraybuffer" src="./assets/models/ancient_egyptian_basalt_cat_sculpture.glb"></a-asset-item>
+        <a-asset-item id="jackalModel" response-type="arraybuffer" src="./assets/models/egyptian_jackal.glb"></a-asset-item>
+        <a-asset-item id="greekVaseModel" response-type="arraybuffer" src="./assets/models/greek_vase.glb"></a-asset-item>
+        <a-asset-item id="greekModel" response-type="arraybuffer" src="./assets/models/statue_of_demetra.glb"></a-asset-item>
+        <a-asset-item id="oniMaskModel" response-type="arraybuffer" src="./assets/models/japanese_mask.glb"></a-asset-item>
+        <a-asset-item id="japanModel" response-type="arraybuffer" src="./assets/models/japanese_statue.glb"></a-asset-item>
+        <audio id="egyptSound" src="assets/sounds/gyptMusic.mp3" preload="auto" crossorigin="anonymous"></audio>
+        <audio id="greekMusic" src = "assets/sounds/GreekMusic.mp3" preload="auto" crossorigin="anonymous"></audio>
+        <audio id="japanMusic" src = "assets/sounds/japanMusic.mp3" preload="auto" crossorigin="anonymous"></audio>
+    </a-assets>
+
+    <a-scene id="scene" start-experience>
+        <a-entity id = "environment" environment="preset: checkerboard; seed: 123; skyType: gradient; skyColor: #0f0c14; horizonColor: #000000; lighting: none; dressing: none;"></a-entity>
+
+        <!-- lights -->
+        <a-entity light="type: point; intensity: 3; distance: 5" position="-4 3 -8"></a-entity>
+        <a-entity light="type: point; intensity: 3; distance: 5" position="0 3 -8"></a-entity>
+        <a-entity light="type: point; intensity: 3; distance: 5" position="4 3 -8"></a-entity>
+
+        <!-- Pedestals and Items -->
+        <a-box drop-item class="interactive" position="-4 0.5 -8" depth="1" height="0.5" width="1" 
+            color="#444" itemposition = "-4 1 -8" itemid="bastetEntity" 
+            itemanimation = "property: position; dir: alternate; dur: 2000; to: -4 1.2 -8; loop: true; easing: linear;">
+        </a-box>
+        <a-entity class="interactive ambient-music" id="bastetEntity" gltf-model="#bastetModel" position="-4 1 -8" scale="0.7 0.7 0.7"
+                  click-to-pickup
+                  sound="src: #egyptSound; autoplay: false; loop: true; positional: true; maxDistance: 2; rolloffFactor: 5; volume: 0.5"
+                  animation="property: rotation; to: 0 360 0; loop: true; dur: 8000; easing: linear;"
+                  animation__bob="property: position; dir: alternate; dur: 2000; to: -4 1.2 -8; loop: true; easing: linear;"
+                  isHeld="false"
+                  environemntProp = "preset: egypt; skyType: atmosphere;  lighting: distant; dressing: pyramids; "
+                  statueModel="#jackalModel"
+                  statuePos = "0 0 -20"
+                  statueScale = "1 1 1">
+        </a-entity>
+        <!-- <a-entity gltf-model="#jackalModel" position ="0 0 -20" scale = '1 1 1'></a-entity> -->
+
+        <a-box drop-item class="interactive" position="0 0.5 -8" depth="1" height="0.5" width="1" 
+            color="#444" itemposition = "0 1.1 -8" itemid="vaseEntity"
+            itemanimation="property: position; dir: alternate; dur: 2000; to: 0 1.3 -8; loop: true; easing: linear;"></a-box>>
+        </a-box>
+        <a-entity class="interactive ambient-music" id="vaseEntity" gltf-model="#greekVaseModel" position="0 1.1 -8" scale="1.2 1.2 1.2"
+                  click-to-pickup
+                  sound="src: #greekMusic; autoplay: false; loop: true; positional: true; maxDistance: 2; rolloffFactor: 10; volume: 0.5"
+                  animation="property: rotation; to: 0 360 0; loop: true; dur: 8000; easing: linear;"
+                  animation__bob="property: position; dir: alternate; dur: 2000; to: 0 1.3 -8; loop: true; easing: linear;"
+                  isHeld="false"
+                  environemntProp = "preset: forest; seed: 222; skyType: atmosphere;  lighting: distant; dressing: trees;"
+                  statueModel="#greekModel"
+                  statuePos = "0 6.4 -20"
+                  statueScale = ".1 .1 .1"> >
+        </a-entity>
+
+        <a-box drop-item class="interactive" position="4 0.5 -8" depth="1" height="0.5" width="1" 
+            color="#444" itemposition = "4 1.2 -8" itemid="oniEntity"
+            itemanimation="property: position; dir: alternate; dur: 2000; to: 4 1.4 -8; loop: true; easing: linear;">
+        </a-box>
+        <a-entity class="interactive ambient-music" id="oniEntity" gltf-model="#oniMaskModel" position="4 1.2 -8" scale="0.35 0.35 0.35"
+                  click-to-pickup
+                  sound="src: #japanMusic; autoplay: false; loop: true; positional: true; maxDistance: 2; rolloffFactor: 10; volume: 0.5"
+                  animation="property: rotation; to: 0 360 0; loop: true; dur: 8000; easing: linear;"
+                  animation__bob="property: position; dir: alternate; dur: 2000; to: 4 1.4 -8; loop: true; easing: linear;"
+                  isHeld="false"
+                  environemntProp = "preset: japan; seed: 222; skyType: atmosphere;  lighting: distant; dressing: torii;"
+                  statueModel="#japanModel"
+                  statuePos = "0 0 -20"
+                  statueScale = "8 8 8"> >
+        </a-entity>
+
+        <!-- Camera with Cursor -->
+        <a-entity twoway-motion="speed: 35" camera position="0 1.6 0" look-controls wasd-controls isHolding="null">
+            <a-entity cursor="rayOrigin: mouse" raycaster="far: 2; interval: 200; objects: .interactive"></a-entity>
+        </a-entity>
+    </a-scene>
+</body>
+</html>
